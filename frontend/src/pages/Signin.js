@@ -2,11 +2,11 @@ import React, { useCallback, useReducer, useState } from 'react';
 import { Button, TextField, Box, Grid } from '@mui/material';
 
 import './Form.css';
-import {
-  VALIDATOR_REQUIRE,
-  VALIDATOR_MINLENGTH
-} from '../util/validators';
 import {apis} from '../apis/apis.js';
+import { config } from '../configs.js'
+
+const jwt = require('jsonwebtoken');
+const JWT_KEY = config.JWT_KEY
 
 const Signin = () => {
   const [validButton, setValidButton] = useState(false)
@@ -33,9 +33,8 @@ const Signin = () => {
 
 
   const [requestResponse, setRequestResponse] = useState('')
-  const handleRequestResponse = res => {
-    console.log(res)
-    setRequestResponse(res.message)
+  const handleResponseMessage = msg => {
+    setRequestResponse(msg)
   }
 
   function handleSubmit(event) {
@@ -46,11 +45,34 @@ const Signin = () => {
     apis.submitLogin(newUserEmail, newUserPassword)
       .then(res => {
         console.log("Submit Signin result:")
-        if (res["response"]) {
-          // to know exactly what the res.xxx is, try doing console.log(res) and view the structure of the object in the browser console
-          handleRequestResponse(res["response"]["data"])
-        } else {
-          handleRequestResponse(res["data"])
+        if (res["response"]) { // this part are for failed requests, such as no account or wrong password
+          let msg = res.response.data.message
+          handleResponseMessage(msg)
+        } else { // this part are for successful requests
+          console.log("Inside res[\"data\"] part")
+          let decryptedToken
+
+          try {
+            decryptedToken = jwt.verify(res["data"]["token"], JWT_KEY)
+            
+            console.log("inside the SUCCESS response part!")
+            console.log("Data:")
+            console.log(res.data)
+
+            console.log("Token:")
+            console.log(res.data.token)
+
+
+            console.log("Decrypted Token:")
+            console.log(decryptedToken)
+
+            handleResponseMessage(res.data.message)
+          } catch {
+            console.log("inside the FAIL jwt decrpytion part!")
+            console.log(res.data)
+            handleResponseMessage(res.data.message)  
+          }
+
         }
       })
   }

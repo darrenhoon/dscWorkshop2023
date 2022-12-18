@@ -73,8 +73,11 @@ const Signup = () => {
 
   // if you want some global state, use redux.
   function handleOauthCallback(res) {
+    console.log(`Entire response:\n`)
+    console.log(res)
     console.log(`Encoded JWT Token:\n${res.credential}\n\n`)
     let userObj = jwt_decode(res.credential)
+    console.log(`After decoding:`)
     console.log(userObj)
     if (userObj.email_verified) {
       setNewUserEmail(userObj.email)
@@ -107,7 +110,7 @@ const Signup = () => {
             <TextField 
               id="outlined-basic" 
               variant="outlined" 
-              type="password"
+              // type="password"
               label="Password"
               errorText="Please enter your password."
               fullWidth="true"

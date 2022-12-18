@@ -50,17 +50,9 @@ const signup = async (req, res, next) => {
 
 
 
-
-
-
-
-
-
 const login = async (req, res, next) => {
-  // console.log("login hit!")
-  // res.status(200).json({message: "Login hit!"});
-  // return
-  console.log(req.body)
+
+  // console.log(req.body)
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.status(400).json({message: "Invalid inputs passed, please check your data."});
@@ -107,7 +99,7 @@ const login = async (req, res, next) => {
         email: existingUser.email
       },
       process.env.JWT_KEY,
-      { expiresIn: "24h" } //30 seconds
+      { expiresIn: "24h" }
     );
   } catch (err) {
     res
@@ -118,6 +110,9 @@ const login = async (req, res, next) => {
     return;
   }
 
+
+  // NOTE: DO NOT SEND THE user BACK TO THE FRONTEND IN A LIVE APPLICATION.
+  // but for demonstration purposes it is here to show the decrypted JWT token will give you the information
   res.status(200).json({
     message: "Logged in!",
     user: existingUser,

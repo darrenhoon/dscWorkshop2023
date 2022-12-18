@@ -3,6 +3,7 @@ import { config } from '../configs.js'
 
 const USER_SERVICE_URL = config.USER_SERVICE_URL
 const OAUTH_GOOGLE_SERVICE_URL = config.OAUTH_GOOGLE_SERVICE_URL
+const JWT_KEY = config.JWT_KEY
 
 export const apis = {
     submitSignup,
@@ -32,10 +33,10 @@ async function submitLogin(userEmail, userPassword) {
         email: userEmail,
         password: userPassword,
     }).then((res)=>{
-        console.log(res);
+        // console.log(res);
         return res
     }).catch(err => {
-        console.log(err);
+        // console.log(err);
         return err
     })
 }
